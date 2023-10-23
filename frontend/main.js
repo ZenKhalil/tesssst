@@ -630,7 +630,7 @@ for (const album of filteredAlbums) {
 
     albumListHTML += `
         <div class="album-card">
-            <img src="./images/${album.id}.jpg" alt="${album.title}" class="album-cover">
+            <img src="http://localhost:3006/albums/${album.id}/image" alt="${album.title}" class="album-cover">
             <div class="album-info">
                 <h3>${album.title}</h3>
                 <p>Release Date: ${album.release_date}</p>
@@ -692,7 +692,7 @@ function displayAlbums(albums, artists) {
 
     html += `
             <div class="album" data-album-id="${album.id}">
-                <img src="./images/${album.id}.jpg" alt="${album.title} Cover">
+                <img src="http://localhost:3006/albums/${album.id}/image" alt="${album.title}">
                 <h2>${album.title}</h2>
                 <p>Release Date: ${album.release_date}</p>
                 <p>${artistName}</p>

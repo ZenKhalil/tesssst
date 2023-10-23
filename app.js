@@ -10,7 +10,7 @@ import { setupAssociations } from './backend/models/associations.js';  // Import
 const app = express();
 
 // Middleware to parse JSON requests
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
 // Use CORS middleware
 app.use(cors()); // This will allow all origins.
@@ -25,8 +25,8 @@ app.use('/tracks', trackRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something went wrong!');
+  console.error(err.stack);
+  res.status(500).send(err.message);
 });
 
 const PORT = process.env.PORT || 3006;

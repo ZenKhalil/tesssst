@@ -104,7 +104,6 @@ function toggleGenreSelection(element) {
     element.classList.toggle('selected');
 }
 
-// Function to handle form submission
 async function handleCreateArtistFormSubmission(event) {
   event.preventDefault();
   console.log("handleCreateArtistFormSubmission called");
@@ -114,9 +113,14 @@ async function handleCreateArtistFormSubmission(event) {
     genres: Array.from(document.querySelectorAll(".genre-label.selected")).map(
       (element) => element.getAttribute("data-genre")
     ),
-    image: "", // Initialize image as an empty string
     biography: document.getElementById("biography").value,
   };
+
+  // Create a new FormData object
+  const formData = new FormData();
+  formData.append("name", newArtist.name);
+  formData.append("genres", newArtist.genres.join(","));
+  formData.append("biography", newArtist.biography);
 
   // Check which image source option is selected
   const uploadImageRadio = document.getElementById("uploadImage");
@@ -124,81 +128,69 @@ async function handleCreateArtistFormSubmission(event) {
     // Handle image upload
     const imageFile = document.getElementById("imageUpload").files[0];
     if (imageFile) {
-      newArtist.image = imageFile.name;
-
-      // Read the image file and store it in localStorage
-      const reader = new FileReader();
-      reader.readAsDataURL(imageFile);
-      reader.onloadend = function () {
-        const base64Image = reader.result.split(",")[1];
-        localStorage.setItem(`artistImage_${newArtist.name}`, base64Image);
-      };
-      reader.onerror = function (error) {
-        console.error("Error reading file:", error);
-      };
+      formData.append("image", imageFile);
     }
   } else {
-    // Handle image link
-    newArtist.image = document.getElementById("imageLinkInput").value;
+    // If using an image link, you can append it to formData as well
+    const imageLink = document.getElementById("imageLinkInput").value;
+    formData.append("imageLink", imageLink);
   }
 
   // Collect album and track data
   const albumElements = document.querySelectorAll(".album-entry");
   const albums = Array.from(albumElements).map((albumElement) => {
-    return {
+    const album = {
       name: albumElement.querySelector(".album-name").value,
       tracks: albumElement
         .querySelector(".album-tracks")
         .value.split(",")
         .map((track) => track.trim()),
     };
+
+    // Handle album image upload
+    const albumImageFile = albumElement.querySelector(".album-image-upload")
+      .files[0];
+    if (albumImageFile) {
+      formData.append(`albumImage_${album.name}`, albumImageFile);
+    }
+
+    return album;
   });
   newArtist.albums = albums;
 
-try {
-  // Call the createArtist function from CRUD.js
-const artistData = await createArtist(
-  newArtist.name,
-  newArtist.genres.join(","),
-  newArtist.biography
-);
+  try {
+    // Call the createArtist function from CRUD.js
+    const artistData = await createArtist(formData);
 
-// Now, use the artistData.id for creating the album
-if (artistData && artistData.id) {
-  for (const album of newArtist.albums) {
-    const createdAlbum = await createAlbum(album.name, artistData.id);
-    for (const track of album.tracks) {
-      await createTrack(track, createdAlbum.id);
+    // Now, use the artistData.id for creating the album
+    if (artistData && artistData.id) {
+      for (const album of newArtist.albums) {
+        const createdAlbum = await createAlbum(album.name, artistData.id);
+        for (const track of album.tracks) {
+          await createTrack(track, createdAlbum.id);
+        }
+      }
+    } else {
+      throw new Error("Artist ID is missing after creation.");
     }
+
+    // Refresh the artists list
+    await fetchArtists();
+
+    // Close the modal
+    const modals = document.querySelectorAll("#createArtistModal");
+    modals.forEach((modal) => {
+      modal.style.display = "none";
+      document.body.removeChild(modal);
+    });
+
+    // Show success alert
+    alert("Artist and associated albums/tracks have been created :)");
+  } catch (error) {
+    // Show error alert
+    alert("Failed to create artist and associated albums/tracks :(");
+    console.error("Error creating artist:", error);
   }
-} else {
-  throw new Error("Artist ID is missing after creation.");
-}
-  // Assuming the createdArtist object has an 'id' property
-  for (const album of newArtist.albums) {
-    const createdAlbum = await createAlbum(createdArtist.id, album.name);
-    for (const track of album.tracks) {
-      await createTrack(createdAlbum.id, track);
-    }
-  }
-
-  // Refresh the artists list
-  await fetchArtists();
-
-  // Close the modal
-  const modals = document.querySelectorAll("#createArtistModal");
-  modals.forEach((modal) => {
-    modal.style.display = "none";
-    document.body.removeChild(modal);
-  });
-
-  // Show success alert
-  alert("Artist and associated albums/tracks have been created :)");
-} catch (error) {
-  // Show error alert
-  alert("Failed to create artist and associated albums/tracks :(");
-  console.error("Error creating artist:", error);
-}
 }
 
 function addAlbumField() {

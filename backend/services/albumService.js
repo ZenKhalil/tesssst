@@ -118,8 +118,9 @@ export const uploadAlbumImage = async (id, imageData) => {
 // Function to retrieve an album image
 export const getAlbumImage = async (id) => {
   const album = await Album.findByPk(id);
-  if (!album) return null;
-
+  if (!album || !album.image) {
+    return null;
+  }
   return album.image;
 };
 

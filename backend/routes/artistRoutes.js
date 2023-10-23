@@ -14,13 +14,17 @@ router.get("/:id/image", artistController.getArtistImage);
 
 router.get("/:artistId/albums", artistController.getAlbumsByArtist);
 
+const validGenres = ["R&B","Electropop","Indie","Funk","K-Pop","Latin","Pop","Rap","Disco","Folk","Alternative","Rock","Contemporary R&B","Soul","Dance","Hip-Hop","Soft Rock","Country",
+];
+
 router.post(
   "/",
+  artistController.uploadMiddleware,
   [
-    artistController.uploadMiddleware,
     body("name").notEmpty().withMessage("Name is required").isLength({ max: 255 }).withMessage("Name should not exceed 255 characters"),
     body("biography").optional().isLength({ max: 1000 }).withMessage("Biography should not exceed 1000 characters"),
-    body("genres").optional().isLength({ max: 255 }).withMessage("Genre should not exceed 255 characters"),
+    body("genres").isArray().withMessage("Genres should be an array"),
+    body("genres.*").isIn(validGenres).withMessage("Invalid genre selected"),
   ],
   artistController.createArtist
 );

@@ -1,33 +1,34 @@
-import express from 'express';
-import * as albumController from '../controllers/albumController.js';
-import { authenticate } from './middleware/authMiddleware.js';
+import express from "express";
+import * as albumController from "../controllers/albumController.js";
+import { authenticate } from "./middleware/authMiddleware.js";
 import multer from "multer";
 
 const router = express.Router();
-const upload = multer({ dest: "uploads/" });
 
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Route to upload an album image
+router.post("/image", upload.single("image"), albumController.uploadAlbumImage);
+
+// Route to retrieve an album image
+router.get("/:id/image", albumController.retrieveAlbumImage);
+
+// Route to create an album with authentication
 router.post(
-  "/albums/image",
+  "/",
   upload.single("image"),
-  albumController.uploadAlbumImage
+  authenticate,
+  albumController.createAlbum
 );
-router.get("/albums/:id/image", albumController.retrieveAlbumImage);
 
-router.post('/albums', authenticate, albumController.createAlbum);
-
-router.get('/search', albumController.searchAlbums);
-router.get('/filterByDate', albumController.filterAlbumsByDate);
-
-router.post('/complete', albumController.createCompleteAlbum);
-
-router.get('/', albumController.getAllAlbums);
-
-// Nested route to get tracks of a specific album
-router.get('/:albumId/tracks', albumController.getTracksByAlbum);
-
-router.get('/:id', albumController.getAlbumById);
-router.post('/', albumController.createAlbum);
-router.put('/:id', albumController.updateAlbum);
-router.delete('/:id', albumController.deleteAlbum);
+// Other routes
+router.get("/search", albumController.searchAlbums);
+router.get("/filterByDate", albumController.filterAlbumsByDate);
+router.post("/complete", albumController.createCompleteAlbum);
+router.get("/", albumController.getAllAlbums);
+router.get("/:albumId/tracks", albumController.getTracksByAlbum);
+router.get("/:id", albumController.getAlbumById);
+router.put("/:id", albumController.updateAlbum);
+router.delete("/:id", albumController.deleteAlbum);
 
 export default router;

@@ -1,9 +1,26 @@
 import * as albumService from '../services/albumService.js';
 import * as trackService from '../services/trackService.js';
-import {
-  createAlbumWithImage,
-  getAlbumImage,
-} from "../services/albumService.js";
+import { createAlbumWithImage, getAlbumImage } from "../services/albumService.js";
+import multer from 'multer';
+
+const storage = multer.memoryStorage();
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpg" || file.mimetype === "image/png") {
+    // Accept the file
+    cb(null, true);
+  } else {
+    // Reject the file
+    cb(null, false);
+    cb(new Error("Only .jpg and .png format allowed!"));
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // Limit file size to 20MB
+  fileFilter: fileFilter,
+});
 
 export const uploadAlbumImage = async (req, res, next) => {
   try {
@@ -19,13 +36,51 @@ export const uploadAlbumImage = async (req, res, next) => {
 export const retrieveAlbumImage = async (req, res, next) => {
   try {
     const albumId = req.params.id;
-    const imageData = await getAlbumImage(albumId);
-    res.set("Content-Type", "image/jpg"); // Adjust content type as necessary
-    res.send(imageData);
+    console.log(`Fetching image for album ID: ${albumId}`);
+
+    const album = await getAlbumImage(albumId);
+
+    if (!album) {
+      console.log(`Album with ID ${albumId} not found.`);
+      return res.status(404).send("Album not found");
+    }
+
+    if (!album.image || !album.image.data) {
+      console.log(`Image data for album ID ${albumId} not found.`);
+      return res.status(404).send("Image not found");
+    }
+
+    const buffer = Buffer.from(album.image.data);
+
+    const magicNumbers = buffer.toString("hex", 0, 4);
+    let contentType;
+    switch (magicNumbers) {
+      case "ffd8ffe0":
+      case "ffd8ffe1":
+      case "ffd8ffe2":
+        contentType = "image/jpg";
+        break;
+      case "89504e47":
+        contentType = "image/png";
+        break;
+      default:
+        console.log(
+          `Unsupported image format for album ID ${albumId}. Magic numbers: ${magicNumbers}`
+        );
+        return res.status(415).send("Unsupported image format");
+    }
+
+    res.set("Content-Type", contentType);
+    res.send(buffer);
   } catch (error) {
+    console.error(
+      `Error while retrieving image for album ID ${albumId}:`,
+      error
+    );
     next(error);
   }
 };
+
 
 export const getAllAlbums = async (req, res, next) => {
     try {
@@ -72,13 +127,19 @@ export const getAlbumById = async (req, res, next) => {
 };
 
 export const createAlbum = async (req, res, next) => {
-    try {
-        const album = await albumService.createAlbum(req.body);
-        res.status(201).json(album);
-    } catch (error) {
-        next(error);
-    }
+  try {
+    const albumData = {
+      ...req.body,
+      image: req.file ? req.file.buffer : null,
+    };
+
+    const album = await albumService.createAlbum(albumData);
+    res.status(201).json(album);
+  } catch (error) {
+    next(error);
+  }
 };
+
 
 export const updateAlbum = async (req, res, next) => {
     try {
