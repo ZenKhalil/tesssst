@@ -1,0 +1,761 @@
+/* Reset and Base Styles */
+html, body {
+    height: 100%;
+    overflow: auto;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light grey background for better visibility */
+}
+
+:root {
+    --primary-color: #2a2a2a;
+    --secondary-color: #555555;
+    --tertiary-color: #e1e1e1;
+    --hover-color: #aaaaaa;
+    --background-color: #f2f2f2;
+    --font-primary: 'Montserrat', sans-serif;
+    --font-secondary: Arial, Helvetica, sans-serif;
+}
+
+/* ============ Navigation ============ */
+
+nav {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 1% 10%;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav li {
+    margin: 0 15px;
+}
+
+nav a {
+    font-family: var(--font-primary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0 10px;
+    color: white;
+}
+
+nav a:hover {
+    font-weight: 400;
+    color: var(--hover-color);
+}
+
+/* Main Content Styles */
+#content {
+    height: auto;
+    overflow: auto;
+    padding: 16px;
+    grid: inherit;
+    position: relative;
+    top: -2px;
+}
+
+.content-wrapper {
+    height: auto;
+    overflow: auto; /* Allows scrolling if content overflows */
+}
+
+#searchBar {
+    margin: 1rem auto; /* Center the search bar */
+    width: 80%; /* Set the width */
+    max-width: 600px; /* Limit the maximum width */
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
+    border-radius: 25px; /* Rounded corners */
+    overflow: hidden; /* Hide overflow for rounded corners */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    background-color: #fff; /* White background */
+}
+
+#searchBar input[type="text"] {
+    flex: 1; /* Take up available space */
+    border: none; /* Remove default border */
+    padding: 0.5rem 1rem; /* Add some padding */
+    font-size: 1rem; /* Set font size */
+    outline: none; /* Remove focus outline */
+}
+
+/* Grid System for Artists, Albums, and Tracks */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+#artists, #albums, #tracks, .genre-page, .genre-page .album {
+    display: grid;
+    cursor: pointer;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.favorites-page, .genre-page {
+    display: grid;
+    cursor: pointer;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1px;
+}
+
+.artist-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    position: relative;
+    margin-top: 6rem;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
+    justify-items: center;
+}
+
+
+.genre-page .artist-card {
+    border: 1px solid var(--tertiary-color);
+    padding: 15px;
+    margin: 0 10px;
+    width: 30%;
+    box-sizing: border-box;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.genre-page .artist-row {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+.genre-page h1 {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    text-align: center;
+    margin-top: 0rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #ffffff;
+    background: linear-gradient(45deg, #555555, #c26262);
+    padding: 11px 15px;
+    border-radius: 18px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.genre-page h2 {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    text-align: center;
+    margin-top: 0rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #ffffff;
+    background: linear-gradient(45deg, #555555, #7b93b6);
+    padding: 11px 15px;
+    border-radius: 18px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.genre-page {
+    padding: 10px;
+    max-width: 1200px;
+    margin: auto;
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.genre-page .artist-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.track-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+}
+
+.track-list li {
+    margin: 4px 0;
+}
+
+.favorites-page h2 {
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #ffffff;
+    background: linear-gradient(45deg, #555555, #c26262);
+    padding: 20px; /* Adjust as needed */
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+.artist-card:hover, .album:hover, .track:hover {
+    transform: translateY(-10px);
+}
+
+/* Artist Card Styles */
+.artist-image-container {
+  position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* 1:1 Aspect Ratio */
+    background-color: #f0f0f0;
+    overflow: hidden;
+}
+
+.artist-card p, h3 {
+    padding: 8px;
+}
+
+.artist-image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
+}
+
+/* Overlay for Play Button (if needed) */
+.artist-image-container .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.artist-image-container:hover .overlay {
+    opacity: 1;
+}
+
+.return-icon.top-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.album-details, .genre-page .album-details {
+    position: relative;  /* Make sure the parent div is relative */
+}
+
+.clickable-album-title {
+    cursor: pointer;
+    font-weight: bold;
+    color: #007bff; /* You can choose any color you like */
+}
+
+.album-info {
+    flex: 1;
+}
+
+/* Artist Info Styles */
+.artist-info {
+    padding: 10px;
+}
+
+.artist-info h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.artist-info p {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Artists Popup */
+.artist-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 600px;
+    max-height: 118vh;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    display: none;
+    font-family: 'Arial', sans-serif;
+    overflow: auto;
+}
+
+/* Button Styling (if any) */
+.artist-popup button {
+    padding: 12px 24px;
+    background-color: #393b3d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.artist-popup button:hover {
+    background-color: #000000;
+    color: white;
+}
+
+/* Active State */
+.artist-popup.active {
+    display: block;
+}
+
+/* Artist Details */
+.artist-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px; /* Consistent gap between elements */
+}
+
+/* Artist Image */
+.artist-details img {
+    width: 100%;
+    max-width: 365px; /* Increased max-width */
+    object-fit: cover;
+    margin-bottom: 2px; /* Added some space below */
+    border-radius: 8px; /* Rounded corners for images */
+}
+
+/* Artist Name and Biography */
+.artist-details h2, .artist-details p {
+    margin: 10px 0;
+    color: #333; /* Darker color */
+}
+
+/* Album Titles */
+.artist-details ul {
+    list-style: none; /* Removed bullets */
+    padding: 0;
+    width: 100%; /* Full width */
+}
+
+.clickable-album-title {
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #414244;
+    padding: 8px; /* Padding for better clickability */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.clickable-album-title:hover {
+    background-color: #5557588e; /* Background color on hover */
+    color: #fff; /* Text color on hover */
+    border-radius: 8px;
+}
+
+/* Artist Actions (like website link, favorite button) */
+.artist-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 10px;
+}
+
+.album-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    background-color: #414141;
+    padding: 20px;
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    z-index: 1002;
+    visibility: hidden;
+    overflow: auto;
+    font-family: 'Arial', sans-serif; /* Consistent font */
+}
+
+.popup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+
+/* Active State */
+.album-popup.active {
+    opacity: 1;
+    visibility: visible;
+    animation: spinIn 0.7s forwards;
+}
+
+/* Album Cover Image */
+.album-popup img {
+    width: 100%;
+    max-width: 200px; /* Increased max-width */
+    object-fit: contain;
+    margin-bottom: 20px; /* Added some space below */
+    border-radius: 8px; /* Rounded corners for images */
+}
+
+/* Album Details */
+.album-popup .album-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px; /* Consistent gap between elements */
+}
+
+/* Album Title */
+.album-popup .album-details h2 {
+    font-size: 24px; /* Larger text */
+    color:white;
+    margin: 0; /* Removed margin */
+}
+
+/* Button Styling */
+.album-popup button {
+    padding: 8px 24px;
+    background-color: #939393;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.album-popup button:hover {
+    color: rgb(29, 28, 27);
+    background-color: white;
+}
+
+/* Track List */
+.album-popup .album-details ul {
+    list-style: none; /* Removed bullets */
+    padding: 0;
+    width: 100%; /* Full width */
+}
+
+.album-card {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.album-popup .album-details ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    color: white;
+    border-bottom: 1px solid #eee; /* Separator line */
+}
+
+.genre-page .album-cover {
+    width: 268px;
+    height: 256px;
+    object-fit: cover;
+}
+
+
+.album-cover {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-right: 16px;
+}
+
+
+.album img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* Ensure it's below the popup but above other page content */
+    visibility: hidden;/* Initially hidden */
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+@keyframes spinIn {
+    0% {
+        transform: perspective(400px) translate(-50%, -50%) rotateY(-180deg);
+        opacity: 0;
+    }
+ 
+    100% {
+        transform: perspective(400px) translate(-50%, -50%) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+.album-popup.active {
+    animation: spinIn 0.7s forwards; /* Reduced duration to 0.5s */
+}
+
+
+.website-link {
+    color: #1DB954;
+    text-decoration: none;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #1DB954;
+    outline: none;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #33333341;
+    color: white;
+    text-align: center;
+   position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+footer p {
+    margin: 0; 
+    padding: 0;  
+    line-height: 25px; 
+}
+
+.album-cover {
+    width: 100px;
+    height: 180px;
+    object-fit: cover;
+}
+
+.track-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.track-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.track-number {
+    flex: 1;
+    text-align: left;
+}
+
+.track-title {
+    flex: 5;
+    text-align: left;
+}
+
+.track-duration {
+    flex: 1;
+    text-align: right;
+}
+
+/* Return Icon */
+.return-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+    font-size: 24px; /* Increased size */
+    color: #333; /* Darker color */
+}
+
+
+.about-container {
+  background-color: #f9f9f9;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.about-heading {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.about-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #666;
+}
+
+.about-divider {
+  margin: 1.5rem 0;
+  border: none;
+  border-bottom: 1px solid #ccc;
+}
+
+
+/* Home Page */
+.home-container {
+    text-align: center;
+    padding: 8rem;
+    background-color: rgb(178 203 206 / 50%);
+    border-radius: 10px;
+    margin: 8rem auto;
+    width: 80%;
+}
+
+.home-heading {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  animation: fadeInOut 8s infinite;
+}
+
+.home-text {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0;
+    content: "WELCOME...";
+  }
+  20% {
+    opacity: 1;
+  }
+  35%, 45% {
+    opacity: 0;
+  }
+   50%, 65% {
+    opacity: 1;
+    content: "TO MUSIC DIRECTORY!";
+  }
+  85% {
+    opacity: 1;
+    content: "TO MUSIC DIRECTORY!";
+  }
+}
+
+
+.track {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.track:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.track h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.track-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.track-info span {
+  display: flex;
+  align-items: center;
+}
+
+.track-info i {
+  margin-right: 5px;
+}
+
+
+.dropdown-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-bottom: 2px solid #e0e0e0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-container label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.dropdown-container select {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.dropdown-container select:focus {
+    outline: none;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+}
