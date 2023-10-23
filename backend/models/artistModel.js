@@ -22,7 +22,7 @@ const Artist = sequelize.define(
       type: DataTypes.TEXT, // TEXT type for longer strings
       allowNull: true, // Set to true if you want to allow artists without a biography
     },
-    image_data: {
+    image: {
       type: DataTypes.BLOB, // Suitable for storing images
       allowNull: true, // Optional image
     },

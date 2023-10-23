@@ -79,7 +79,7 @@ const searchArtists = async (query) => {
   const artist = await Artist.findByPk(id);
   if (!artist) return null;
 
-  artist.image_data = imageData;
+  artist.image = imageData;
   await artist.save();
 
   return artist;
@@ -90,7 +90,7 @@ const searchArtists = async (query) => {
   const artist = await Artist.findByPk(id);
   if (!artist) return null;
 
-  return artist.image_data;
+  return artist.image;
 };
 
 export {

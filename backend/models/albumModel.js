@@ -23,7 +23,7 @@ const Album = sequelize.define(
         key: "id",
       },
     },
-    image_data: {
+    image: {
       type: DataTypes.BLOB, // Suitable for storing images
       allowNull: true, // Optional image
     },

@@ -109,7 +109,7 @@ export const uploadAlbumImage = async (id, imageData) => {
   const album = await Album.findByPk(id);
   if (!album) return null;
 
-  album.image_data = imageData; // Assuming you have an image_data field in your Album model
+  album.image = imageData; // Assuming you have an image field in your Album model
   await album.save();
 
   return album;
@@ -120,7 +120,7 @@ export const getAlbumImage = async (id) => {
   const album = await Album.findByPk(id);
   if (!album) return null;
 
-  return album.image_data;
+  return album.image;
 };
 
 export const createAlbumWithImage = async (albumData, imageFile) => {
