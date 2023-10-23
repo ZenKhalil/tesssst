@@ -20,7 +20,7 @@ export const retrieveAlbumImage = async (req, res, next) => {
   try {
     const albumId = req.params.id;
     const imageData = await getAlbumImage(albumId);
-    res.set("Content-Type", "image/jpeg"); // Adjust content type as necessary
+    res.set("Content-Type", "image/jpg"); // Adjust content type as necessary
     res.send(imageData);
   } catch (error) {
     next(error);

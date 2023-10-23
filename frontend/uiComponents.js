@@ -32,7 +32,7 @@ class ArtistComponent extends UIComponent {
     // Retrieve image from localStorage
     const base64Image = localStorage.getItem(`artistImage_${this.data.name}`);
     const imageSource = base64Image
-      ? `data:image/jpeg;base64,${base64Image}`
+      ? `data:image/jpg;base64,${base64Image}`
       : `./artists/${this.data.id}.jpg`;
 
     return `
