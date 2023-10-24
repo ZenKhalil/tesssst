@@ -1,5 +1,6 @@
 import * as albumService from '../services/albumService.js';
 import * as trackService from '../services/trackService.js';
+import Album from "../models/albumModel.js";
 import { createAlbumWithImage, getAlbumImage } from "../services/albumService.js";
 import multer from 'multer';
 
@@ -34,49 +35,31 @@ export const uploadAlbumImage = async (req, res, next) => {
 };
 
 export const retrieveAlbumImage = async (req, res, next) => {
+  const albumId = req.params.id;
+
+  // Log to check if the function is being triggered
+  console.log(`Attempting to retrieve image for album ID: ${albumId}`);
+
   try {
-    const albumId = req.params.id;
-    console.log(`Fetching image for album ID: ${albumId}`);
+    const album = await Album.findByPk(albumId);
 
-    const album = await getAlbumImage(albumId);
-
+    // Check if the album exists
     if (!album) {
-      console.log(`Album with ID ${albumId} not found.`);
+      console.error(`Album with ID ${albumId} not found.`);
       return res.status(404).send("Album not found");
     }
 
-    if (!album.image || !album.image.data) {
-      console.log(`Image data for album ID ${albumId} not found.`);
+    // Check if the album has an image
+    if (!album.image) {
+      console.error(`No image associated with album ID ${albumId}.`);
       return res.status(404).send("Image not found");
     }
 
-    const buffer = Buffer.from(album.image.data);
-
-    const magicNumbers = buffer.toString("hex", 0, 4);
-    let contentType;
-    switch (magicNumbers) {
-      case "ffd8ffe0":
-      case "ffd8ffe1":
-      case "ffd8ffe2":
-        contentType = "image/jpg";
-        break;
-      case "89504e47":
-        contentType = "image/png";
-        break;
-      default:
-        console.log(
-          `Unsupported image format for album ID ${albumId}. Magic numbers: ${magicNumbers}`
-        );
-        return res.status(415).send("Unsupported image format");
-    }
-
-    res.set("Content-Type", contentType);
-    res.send(buffer);
+    // Send the image data with the appropriate content type
+    res.set("Content-Type", "image/jpg");
+    res.send(album.image);
   } catch (error) {
-    console.error(
-      `Error while retrieving image for album ID ${albumId}:`,
-      error
-    );
+    console.error(`Error retrieving image for album ID ${albumId}:`, error);
     next(error);
   }
 };

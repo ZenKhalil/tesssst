@@ -630,7 +630,7 @@ for (const album of filteredAlbums) {
 
     albumListHTML += `
         <div class="album-card">
-            <img src="http://localhost:3006/albums/${album.id}/image" alt="${album.title}" class="album-cover">
+            <img src="http://localhost:3006/albums/${album.id}" alt="${album.title}" class="album-cover">
             <div class="album-info">
                 <h3>${album.title}</h3>
                 <p>Release Date: ${album.release_date}</p>
@@ -759,7 +759,7 @@ document.getElementById('content').addEventListener('click', async function(even
 
         albumPopup.innerHTML = `
             <div class="album-details">
-                <img src="./images/${albumId}.jpg" alt="${albumTitle}" class="album-cover">
+                <img src="http://localhost:3006/albums/${albumId}/image" alt="${albumTitle}" class="album-cover">
                 <h2>${albumTitle}</h2>
                 <ul class="track-list">
                     ${tracksList}

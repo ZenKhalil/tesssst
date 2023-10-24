@@ -63,20 +63,17 @@ function deleteArtist(id) {
     }
   });
 }
-
 // Album operations
 function createAlbum(title, artistId, releaseDate, imageData) {
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('artist_id', artistId);
+  formData.append('release_date', releaseDate);
+  formData.append('image', new Blob([imageData], { type: 'image/jpeg' })); // Assuming imageData is a Buffer and the image type is JPEG
+
   return fetch("http://localhost:3006/albums", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      title: title,
-      artist_id: artistId,
-      release_date: releaseDate,
-      image: imageData,
-    }),
+    body: formData,
   })
     .then((response) => response.json())
     .then((data) => {
@@ -86,18 +83,15 @@ function createAlbum(title, artistId, releaseDate, imageData) {
 }
 
 function updateAlbum(id, title, artistId, releaseDate, imageData) {
-  const updatedAlbum = {
-    title: title,
-    artist_id: artistId,
-    release_date: releaseDate,
-    image: imageData,
-  };
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('artist_id', artistId);
+  formData.append('release_date', releaseDate);
+  formData.append('image', new Blob([imageData], { type: 'image/jpeg' })); // Assuming imageData is a Buffer and the image type is JPEG
+
   return fetch(`http://localhost:3006/albums/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedAlbum),
+    body: formData,
   })
     .then((response) => response.json())
     .then((data) => {

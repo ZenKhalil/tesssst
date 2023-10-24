@@ -1,5 +1,6 @@
 import * as artistService from "../services/artistService.js";
 import { validationResult } from "express-validator";
+import Artist from "../models/artistModel.js";
 import multer from "multer";
 
 const storage = multer.memoryStorage();
@@ -23,18 +24,17 @@ const upload = multer({
 
 export const getArtistImage = async (req, res, next) => {
   try {
-    const artistId = req.params.id;
-    const imageData = await artistService.getArtistImage(artistId);
-    if (!imageData) {
-      return res.status(404).send("Image not found");
+    console.log(`Attempting to retrieve image for artist ID: ${req.params.id}`);
+    const artist = await Artist.findByPk(req.params.id);
+    if (!artist || !artist.image) {
+      return res.status(404).send("Image not found for the specified artist.");
     }
-
-    // Dynamically set content type
-    const imageType = imageData.mimetype; // Assuming your service returns the mimetype. Adjust accordingly.
-    res.contentType(imageType);
-
-    res.send(imageData.data); // Assuming the image data is stored in a 'data' property. Adjust accordingly.
+    res.set("Content-Type", "image/jpg"); // Adjust content type as necessary
+    res.send(artist.image);
   } catch (error) {
+    console.error(
+      `Error retrieving image for artist ID ${req.params.id}: ${error.message}`
+    );
     next(error);
   }
 };

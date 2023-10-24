@@ -119,9 +119,17 @@ export const uploadAlbumImage = async (id, imageData) => {
 export const getAlbumImage = async (id) => {
   const album = await Album.findByPk(id);
   if (!album || !album.image) {
+    console.log(
+      `Type of album.image for ID ${id}:`,
+      typeof album.image,
+      "Length:",
+      album.image ? album.image.length : "N/A"
+    );
+
     return null;
   }
   return album.image;
+  
 };
 
 export const createAlbumWithImage = async (albumData, imageFile) => {
