@@ -23,18 +23,27 @@ const upload = multer({
 });
 
 export const getArtistImage = async (req, res, next) => {
+   const artistId = req.params.id;
+
   try {
     console.log(`Attempting to retrieve image for artist ID: ${req.params.id}`);
-    const artist = await Artist.findByPk(req.params.id);
-    if (!artist || !artist.image) {
+
+    const artist = await Artist.findByPk(artistId);
+
+    if (!artist) {
       return res.status(404).send("Image not found for the specified artist.");
     }
-    res.set("Content-Type", "image/jpg"); // Adjust content type as necessary
+
+    if (!artist.image) {
+      console.error(`Error retrieving image for artist ID ${artistId}.`);
+      return res.status(404).send("Image not found");
+    }
+
+    // Send the image data with the appropriate content type
+    res.set("Content-Type", "image/jpg");
     res.send(artist.image);
   } catch (error) {
-    console.error(
-      `Error retrieving image for artist ID ${req.params.id}: ${error.message}`
-    );
+    console.error(`Error retrieving image for album ID ${artistId}:`, error);
     next(error);
   }
 };
@@ -136,4 +145,3 @@ export const searchArtists = async (req, res) => {
   }
 };
 
-export const uploadMiddleware = upload.single("image");

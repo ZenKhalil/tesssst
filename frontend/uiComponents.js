@@ -31,9 +31,7 @@ class ArtistComponent extends UIComponent {
   render() {
     // Retrieve image from localStorage
     const base64Image = localStorage.getItem(`artistImage_${this.data.name}`);
-    const imageSource = base64Image
-      ? `data:image/jpg;base64,${base64Image}`
-      : `./artists/${this.data.id}.jpg`;
+    const imageSource = `http://localhost:3006/artists/${this.data.id}/image`;
 
     return `
             <div class="artist-card" data-artist-id="${this.data.id}">
@@ -88,7 +86,7 @@ if (!artistAlbums || !Array.isArray(artistAlbums) || !artistAlbums.length) {
 
   artistPopup.innerHTML = `
             <div class="artist-details">
-                <img src="./artists/${artistData.id}.jpg" alt="${artistData.name}">
+                <img src="http://localhost:3006/artists/${artistData.id}/image" alt="${artistData.name}">
                 <h2>${artistData.name}</h2>
                 <p>${artistData.biography}</p>
                 <ul>
@@ -118,7 +116,7 @@ async function displayAlbumPopup(albumId) {
 
   albumPopup.innerHTML = `
         <div class="album-details">
-            <img src="./images/${album.id}.jpg" alt="${album.title}" class="album-cover">
+            <img src="http://localhost:3006/albums/${album.id}/image" alt="${album.title}" class="album-cover">
             <h2>${album.title}</h2>
             <ul class="track-list">
                 ${tracksList}

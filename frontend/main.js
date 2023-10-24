@@ -598,13 +598,17 @@ async function showArtistsByGenre(genre) {
                 rowOpen = true;
             }
 
-            const imageName = `${artist.id}.jpg`;
+            const imageUrl = `http://localhost:3006/artists/${artist.id}/image`;
             artistListHTML += `
                 <div class="artist-card">
-                    <img src="./artists/${imageName}" alt="${artist.name}">
+                    <img src="${imageUrl}" alt="${artist.name}">
                     <h3>${artist.name}</h3>
                     <p>${artist.biography}</p>
-                    <button class="favorite-btn" data-artist-id="${artist.id}" onclick="event.stopPropagation(); toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? '❤️' : '🤍'}</button>
+                    <button class="favorite-btn" data-artist-id="${
+                      artist.id
+                    }" onclick="event.stopPropagation(); toggleFavorite(${
+              artist.id
+            })">${favorites.includes(artist.id) ? "❤️" : "🤍"}</button>
                 </div>
             `;
 
@@ -630,7 +634,7 @@ for (const album of filteredAlbums) {
 
     albumListHTML += `
         <div class="album-card">
-            <img src="http://localhost:3006/albums/${album.id}" alt="${album.title}" class="album-cover">
+            <img src="http://localhost:3006/albums/${album.id}/image" alt="${album.title}" class="album-cover">
             <div class="album-info">
                 <h3>${album.title}</h3>
                 <p>Release Date: ${album.release_date}</p>
