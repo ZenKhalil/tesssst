@@ -1,5 +1,4 @@
 import express from "express";
-import bodyParser from "body-parser";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 
@@ -11,24 +10,31 @@ import { setupAssociations } from "./backend/models/associations.js"; // Import 
 
 const app = express();
 
-// Middleware to log raw request body
-app.use(fileUpload());
-app.use((req, res, next) => {
-  let data = "";
-  req.on("data", (chunk) => {
-    data += chunk;
-  });
-  req.on("end", () => {
-    console.log("Raw Request Body:", data);
-    next();
-  });
-});
-
 // Use CORS middleware
 app.use(cors()); // This will allow all origins.
 
 // Middleware to parse JSON requests
-// app.use(bodyParser.json());
+app.use(express.json());
+
+// Middleware to handle file uploads
+app.use(fileUpload());
+
+// Middleware to log raw request body for debugging
+// Note: This is for debugging purposes and can be removed in production
+app.use((req, res, next) => {
+  if (req.method === "POST" || req.method === "PUT") {
+    let data = "";
+    req.on("data", (chunk) => {
+      data += chunk;
+    });
+    req.on("end", () => {
+      console.log("Raw Request Body:", data);
+      next();
+    });
+  } else {
+    next();
+  }
+});
 
 // Set up associations
 setupAssociations();

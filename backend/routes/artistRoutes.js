@@ -6,16 +6,12 @@ import multer from "multer";
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Custom middleware to parse artist_genres field
-const parseGenres = (req, res, next) => {
-  if (req.body.artist_genres) {
-    try {
-      req.body.artist_genres = JSON.parse(req.body.artist_genres);
-    } catch (error) {
-      return res
-        .status(400)
-        .json({ errors: [{ msg: "Invalid genres format" }] });
-    }
+// Custom middleware to handle artist_genres as a string
+const handleGenres = (req, res, next) => {
+  if (typeof req.body.artist_genres === "string") {
+    req.body.artist_genres = req.body.artist_genres
+      .split(",")
+      .map((genre) => genre.trim());
   }
   next();
 };
@@ -39,7 +35,6 @@ router.get("/:artistId/albums", artistController.getAlbumsByArtist);
 router.post(
   "/",
   upload.single("image"),
-  parseGenres,
   [
     body("name")
       .notEmpty()
@@ -50,13 +45,22 @@ router.post(
       .optional()
       .isLength({ max: 1000 })
       .withMessage("Biography should not exceed 1000 characters"),
-    body("artist_genres").isArray().withMessage("Genres should be an array"),
+    body("artist_genres")
+      .optional()
+      .isString()
+      .withMessage("Genres should be a string"),
   ],
+  handleGenres,
   artistController.createArtist
 );
 
 // Route to update an artist by ID
-router.put("/:id", upload.single("image"), artistController.updateArtist);
+router.put(
+  "/:id",
+  upload.single("image"),
+  handleGenres,
+  artistController.updateArtist
+);
 
 // Route to delete an artist by ID
 router.delete("/:id", artistController.deleteArtist);

@@ -71,7 +71,6 @@ export const getArtistById = async (req, res, next) => {
 };
 
 export const createArtist = async (req, res, next) => {
-  // Log the received request body to debug the artist_genres issue
   console.log("Received request body:", req.body);
 
   const errors = validationResult(req);
@@ -79,40 +78,40 @@ export const createArtist = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  // Attempt to parse artist_genres if it is a string
-  if (typeof req.body.artist_genres === "string") {
-    try {
-      req.body.artist_genres = JSON.parse(req.body.artist_genres);
-    } catch (error) {
-      console.error("Error parsing artist_genres:", error);
-      return res
-        .status(400)
-        .json({ errors: [{ msg: "Invalid artist_genres format" }] });
-    }
-  }
-
   try {
+    let artistGenres = [];
+    if (req.body.artist_genres) {
+      artistGenres = req.body.artist_genres
+        .split(",")
+        .map((genre) => genre.trim());
+    }
+
     const artistData = {
       ...req.body,
+      artist_genres: artistGenres,
       image: req.file ? req.file.buffer : null,
     };
 
     const artist = await artistService.createArtist(artistData);
     res.status(201).json(artist);
   } catch (error) {
+    console.error("Error creating artist:", error);
     next(error);
   }
 };
 
-
 export const updateArtist = async (req, res, next) => {
   try {
-    if (typeof req.body.artist_genres === "string") {
-      req.body.artist_genres = JSON.parse(req.body.artist_genres);
+    let artistGenres = [];
+    if (req.body.artist_genres) {
+      artistGenres = req.body.artist_genres
+        .split(",")
+        .map((genre) => genre.trim());
     }
 
     const artistData = {
       ...req.body,
+      artist_genres: artistGenres,
       image: req.file ? req.file.buffer : null,
     };
 
@@ -123,6 +122,7 @@ export const updateArtist = async (req, res, next) => {
       res.status(404).send("Artist not found");
     }
   } catch (error) {
+    console.error("Error updating artist:", error);
     next(error);
   }
 };

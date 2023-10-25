@@ -6,7 +6,7 @@ function createArtist(name, genres, biography, imageFile, imageLink) {
   return new Promise((resolve, reject) => {
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("artist_genres", JSON.stringify(genres));
+    formData.append("artist_genres", genres); // genres is expected to be a string
     formData.append("biography", biography);
 
     if (imageFile) {
@@ -37,11 +37,10 @@ function createArtist(name, genres, biography, imageFile, imageLink) {
   });
 }
 
-
-function updateArtist(id, name, genre, biography, imageData) {
+function updateArtist(id, name, genres, biography, imageData) {
   const updatedArtist = {
     name: name,
-    artist_genres: genre.join(","), // Convert genres array to string
+    artist_genres: genres, // genres is expected to be a string
     biography: biography,
     image: imageData,
   };
@@ -77,10 +76,10 @@ function deleteArtist(id) {
 // Album operations
 function createAlbum(title, artistId, releaseDate, imageData) {
   const formData = new FormData();
-  formData.append('title', title);
-  formData.append('artist_id', artistId);
-  formData.append('release_date', releaseDate);
-  formData.append('image', new Blob([imageData], { type: 'image/jpeg' })); // Assuming imageData is a Buffer and the image type is JPEG
+  formData.append("title", title);
+  formData.append("artist_id", artistId);
+  formData.append("release_date", releaseDate);
+  formData.append("image", new Blob([imageData], { type: "image/jpeg" })); // Assuming imageData is a Buffer and the image type is JPEG
 
   return fetch("http://localhost:3006/albums", {
     method: "POST",
@@ -95,10 +94,10 @@ function createAlbum(title, artistId, releaseDate, imageData) {
 
 function updateAlbum(id, title, artistId, releaseDate, imageData) {
   const formData = new FormData();
-  formData.append('title', title);
-  formData.append('artist_id', artistId);
-  formData.append('release_date', releaseDate);
-  formData.append('image', new Blob([imageData], { type: 'image/jpeg' })); // Assuming imageData is a Buffer and the image type is JPEG
+  formData.append("title", title);
+  formData.append("artist_id", artistId);
+  formData.append("release_date", releaseDate);
+  formData.append("image", new Blob([imageData], { type: "image/jpeg" })); // Assuming imageData is a Buffer and the image type is JPEG
 
   return fetch(`http://localhost:3006/albums/${id}`, {
     method: "PUT",

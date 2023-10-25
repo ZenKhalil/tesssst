@@ -33,20 +33,12 @@ const getAlbumsByArtist = async (artistId) => {
 };
 
 const getArtistById = async (id) => {
-  const artist = await Artist.findByPk(id, {
+  return await Artist.findByPk(id, {
     attributes: ["id", "name", "biography", "artist_genres", "image"],
   });
-  if (artist && artist.artist_genres) {
-    artist.setDataValue("genres", artist.artist_genres.split(","));
-  }
-  return artist;
 };
 
-
 const createArtist = async (data) => {
-  if (Array.isArray(data.artist_genres)) {
-    data.artist_genres = data.artist_genres.join(",");
-  }
   return await Artist.create(data);
 };
 
@@ -83,7 +75,7 @@ const searchArtists = async (query) => {
   });
 };
 
- const uploadArtistImage = async (id, imageData) => {
+const uploadArtistImage = async (id, imageData) => {
   const artist = await Artist.findByPk(id);
   if (!artist) return null;
 
@@ -94,7 +86,7 @@ const searchArtists = async (query) => {
 };
 
 // Function to retrieve an artist image
- const getArtistImage = async (id) => {
+const getArtistImage = async (id) => {
   const artist = await Artist.findByPk(id);
   if (!artist) return null;
 
