@@ -6,10 +6,24 @@ window.toggleGenreSelection = function(element) {
     element.classList.toggle('selected');
 };
 
+async function fetchGenresFromDatabase() {
+  try {
+    const response = await fetch("http://localhost:3006/genres");
+    if (!response.ok) {
+      throw new Error("Failed to fetch genres");
+    }
+    const genres = await response.json();
+    return genres.map((g) => g.genres); // Extract the 'genres' column values
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+    return [];
+  }
+}
+
 // Function to show the "Create Artist" form
-export function showCreateArtistModal(event) {
+export async function showCreateArtistModal(event) {
   if (event) event.preventDefault();
-  const uniqueGenres = getUniqueGenres();
+  const uniqueGenres = await fetchGenresFromDatabase();
 
   const genreBobbles = uniqueGenres
     .map(
@@ -108,32 +122,35 @@ async function handleCreateArtistFormSubmission(event) {
   event.preventDefault();
   console.log("handleCreateArtistFormSubmission called");
 
+  const selectedGenresElements = document.querySelectorAll(
+    ".genre-label.selected"
+  );
+  if (selectedGenresElements.length === 0) {
+    alert("Please select at least one genre.");
+    return;
+  }
+
+  const selectedGenres = Array.from(selectedGenresElements).map((element) =>
+    element.getAttribute("data-genre")
+  );
+
   const newArtist = {
     name: document.getElementById("name").value,
-    genres: Array.from(document.querySelectorAll(".genre-label.selected")).map(
-      (element) => element.getAttribute("data-genre")
-    ),
+    artist_genres: selectedGenres,
     biography: document.getElementById("biography").value,
   };
 
-  // Create a new FormData object
-  const formData = new FormData();
-  formData.append("name", newArtist.name);
-  formData.append("genres", newArtist.genres.join(","));
-  formData.append("biography", newArtist.biography);
+  let imageFile = null;
+  let imageLink = null;
 
   // Check which image source option is selected
   const uploadImageRadio = document.getElementById("uploadImage");
   if (uploadImageRadio.checked) {
     // Handle image upload
-    const imageFile = document.getElementById("imageUpload").files[0];
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
+    imageFile = document.getElementById("imageUpload").files[0];
   } else {
-    // If using an image link, you can append it to formData as well
-    const imageLink = document.getElementById("imageLinkInput").value;
-    formData.append("imageLink", imageLink);
+    // If using an image link
+    imageLink = document.getElementById("imageLinkInput").value;
   }
 
   // Collect album and track data
@@ -148,8 +165,7 @@ async function handleCreateArtistFormSubmission(event) {
     };
 
     // Handle album image upload
-    const albumImageFile = albumElement.querySelector(".album-image-upload")
-      .files[0];
+    const albumImageFile = albumElement.querySelector(".album-cover").files[0];
     if (albumImageFile) {
       formData.append(`albumImage_${album.name}`, albumImageFile);
     }
@@ -160,7 +176,13 @@ async function handleCreateArtistFormSubmission(event) {
 
   try {
     // Call the createArtist function from CRUD.js
-    const artistData = await createArtist(formData);
+    const artistData = await createArtist(
+      newArtist.name,
+      newArtist.artist_genres,
+      newArtist.biography,
+      imageFile,
+      imageLink
+    );
 
     // Now, use the artistData.id for creating the album
     if (artistData && artistData.id) {

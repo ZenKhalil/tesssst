@@ -1,6 +1,6 @@
 // associations.js
 
-import Artist from './artistModel.js';
+import {Artist} from './artistModel.js';
 import Album from './albumModel.js';
 import Track from './trackModel.js';
 

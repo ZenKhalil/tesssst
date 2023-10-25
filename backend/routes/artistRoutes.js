@@ -1,46 +1,45 @@
 import express from "express";
 import * as artistController from "../controllers/artistController.js";
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 import multer from "multer";
 
 const router = express.Router();
-
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Custom middleware to parse artist_genres field
+const parseGenres = (req, res, next) => {
+  if (req.body.artist_genres) {
+    try {
+      req.body.artist_genres = JSON.parse(req.body.artist_genres);
+    } catch (error) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "Invalid genres format" }] });
+    }
+  }
+  next();
+};
+
+// Route to search artists
 router.get("/search", artistController.searchArtists);
 
+// Route to get all artists
 router.get("/", artistController.getAllArtists);
+
+// Route to get a specific artist by ID
 router.get("/:id", artistController.getArtistById);
 
 // Endpoint to get artist image
 router.get("/:id/image", artistController.getArtistImage);
 
+// Route to get albums by artist ID
 router.get("/:artistId/albums", artistController.getAlbumsByArtist);
 
-const validGenres = [
-  "R&B",
-  "Electropop",
-  "Indie",
-  "Funk",
-  "K-Pop",
-  "Latin",
-  "Pop",
-  "Rap",
-  "Disco",
-  "Folk",
-  "Alternative",
-  "Rock",
-  "Contemporary R&B",
-  "Soul",
-  "Dance",
-  "Hip-Hop",
-  "Soft Rock",
-  "Country",
-];
-
+// Route to create a new artist
 router.post(
   "/",
-  upload.single("image"), // Changed from artistController.uploadMiddleware
+  upload.single("image"),
+  parseGenres,
   [
     body("name")
       .notEmpty()
@@ -51,18 +50,15 @@ router.post(
       .optional()
       .isLength({ max: 1000 })
       .withMessage("Biography should not exceed 1000 characters"),
-    body("genres").isArray().withMessage("Genres should be an array"),
-    body("genres.*").isIn(validGenres).withMessage("Invalid genre selected"),
+    body("artist_genres").isArray().withMessage("Genres should be an array"),
   ],
   artistController.createArtist
 );
 
-router.put(
-  "/:id",
-  upload.single("image"), // Changed from artistController.uploadMiddleware
-  artistController.updateArtist
-);
+// Route to update an artist by ID
+router.put("/:id", upload.single("image"), artistController.updateArtist);
 
+// Route to delete an artist by ID
 router.delete("/:id", artistController.deleteArtist);
 
 export default router;

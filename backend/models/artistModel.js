@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./index.js";
-import Album from "./albumModel.js"; // Import the Album model for the association
 
 const Artist = sequelize.define(
   "Artist",
@@ -14,23 +13,39 @@ const Artist = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    genres: {
-      type: DataTypes.STRING,
-      allowNull: true, // Set to true if you want to allow artists without a genre
+    artist_genres: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
     },
     biography: {
-      type: DataTypes.TEXT, // TEXT type for longer strings
-      allowNull: true, // Set to true if you want to allow artists without a biography
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     image: {
-      type: DataTypes.BLOB, // Suitable for storing images
-      allowNull: true, // Optional image
+      type: DataTypes.BLOB,
+      allowNull: true,
     },
   },
   {
-    timestamps: true, // This adds created_at and updated_at fields in the database.
-    tableName: "artists", // The name of the table in the database.
+    timestamps: true,
+    tableName: "artists",
   }
 );
 
-export default Artist;
+const Genre = sequelize.define(
+  "Genre",
+  {
+    genres: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
+      unique: true,
+    },
+  },
+  {
+    timestamps: false,
+    tableName: "genres",
+  }
+);
+
+export { Artist, Genre };

@@ -1,5 +1,5 @@
 import Album from "../models/albumModel.js";
-import Artist from "../models/artistModel.js";
+import { Artist } from "../models/artistModel.js";
 import Track from "../models/trackModel.js";
 import { Op } from "sequelize";
 

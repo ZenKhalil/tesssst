@@ -2,21 +2,31 @@ import { displayArtists, displayAlbums, displayTracks } from "./main.js";
 import { artists, ArtistComponent } from "./uiComponents.js";
 
 // Artist operations
-function createArtist(name, genre, biography, imageData) {
+function createArtist(name, genres, biography, imageFile, imageLink) {
   return new Promise((resolve, reject) => {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("artist_genres", JSON.stringify(genres));
+    formData.append("biography", biography);
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    } else if (imageLink) {
+      formData.append("imageLink", imageLink);
+    }
+
     fetch("http://localhost:3006/artists", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-        genre: genre,
-        biography: biography,
-        image: imageData,
-      }),
+      body: formData,
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            throw new Error(text || "Server error");
+          });
+        }
+        return response.json();
+      })
       .then((data) => {
         if (!data.id) {
           throw new Error("Artist creation did not return a valid ID.");
@@ -27,10 +37,11 @@ function createArtist(name, genre, biography, imageData) {
   });
 }
 
+
 function updateArtist(id, name, genre, biography, imageData) {
   const updatedArtist = {
     name: name,
-    genre: genre,
+    artist_genres: genre.join(","), // Convert genres array to string
     biography: biography,
     image: imageData,
   };

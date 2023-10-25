@@ -17,7 +17,7 @@ router.get("/:id/image", albumController.retrieveAlbumImage);
 router.post(
   "/",
   upload.single("image"),
-  authenticate,
+  //authenticate,
   albumController.createAlbum
 );
 

@@ -1,4 +1,4 @@
-import Artist from "../models/artistModel.js";
+import { Artist } from "../models/artistModel.js";
 import Album from "../models/albumModel.js";
 import { Op } from "sequelize";
 
@@ -11,7 +11,7 @@ const getAllArtists = async (queryParams) => {
   const order = queryParams.order || "ASC";
 
   return await Artist.findAll({
-    attributes: ["id", "name", "biography", "genres", "image"],
+    attributes: ["id", "name", "biography", "artist_genres", "image"],
     order: [[sort, order]],
     limit: limit,
     offset: offset,
@@ -33,12 +33,20 @@ const getAlbumsByArtist = async (artistId) => {
 };
 
 const getArtistById = async (id) => {
-  return await Artist.findByPk(id, {
-    attributes: ["id", "name", "biography", "genres", "image"],
+  const artist = await Artist.findByPk(id, {
+    attributes: ["id", "name", "biography", "artist_genres", "image"],
   });
+  if (artist && artist.artist_genres) {
+    artist.setDataValue("genres", artist.artist_genres.split(","));
+  }
+  return artist;
 };
 
+
 const createArtist = async (data) => {
+  if (Array.isArray(data.artist_genres)) {
+    data.artist_genres = data.artist_genres.join(",");
+  }
   return await Artist.create(data);
 };
 
